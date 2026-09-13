@@ -25,8 +25,44 @@ services:
     networks:
       - data_platform
 
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:3.37.0
+    container_name: data-platform-azurite
+    restart: unless-stopped
+
+    command:
+      - azurite-blob
+      - --blobHost
+      - 0.0.0.0
+      - --location
+      - /data
+      - --disableTelemetry
+
+    ports:
+      - "10000:10000"
+
+    volumes:
+      - azurite_data:/data
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "const net=require('net');const s=net.connect(10000,'127.0.0.1',()=>{s.end();process.exit(0)});s.on('error',()=>process.exit(1));"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+    networks:
+      - data_platform
+
 volumes:
   postgres_data:
+  azurite_data:
 
 networks:
   data_platform:
