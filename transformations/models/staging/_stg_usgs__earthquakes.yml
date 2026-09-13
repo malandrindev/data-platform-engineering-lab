@@ -1,0 +1,45 @@
+version: 2
+
+models:
+  - name: stg_usgs__earthquakes
+    description: >
+      Clean staging representation of USGS earthquake events. The model
+      preserves the ingestion snapshot grain while normalizing source fields
+      and converting Unix epoch milliseconds into PostgreSQL timestamps.
+
+    columns:
+      - name: ingestion_run_id
+        description: Pipeline execution that produced the raw snapshot.
+        data_tests:
+          - not_null
+
+      - name: event_id
+        description: USGS earthquake event identifier.
+        data_tests:
+          - not_null
+
+      - name: event_time
+        description: Earthquake event timestamp converted from Unix epoch milliseconds.
+        data_tests:
+          - not_null
+
+      - name: updated_time
+        description: Last source update timestamp converted from Unix epoch milliseconds.
+        data_tests:
+          - not_null
+
+      - name: feature_type
+        description: GeoJSON feature type.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - Feature
+
+      - name: geometry_type
+        description: GeoJSON geometry type.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - Point

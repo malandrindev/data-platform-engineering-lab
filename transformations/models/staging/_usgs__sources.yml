@@ -1,0 +1,24 @@
+version: 2
+
+sources:
+  - name: usgs
+    description: >
+      Raw relational representation of USGS earthquake GeoJSON snapshots
+      loaded from immutable Blob storage.
+    schema: raw
+
+    tables:
+      - name: earthquakes
+        identifier: usgs_earthquakes
+        description: >
+          One row per USGS earthquake feature observed during one ingestion run.
+
+        columns:
+          - name: ingestion_run_id
+            description: Pipeline execution that produced the source snapshot.
+
+          - name: event_id
+            description: USGS earthquake event identifier.
+
+          - name: ingested_at
+            description: Timestamp when the raw relational record was loaded.

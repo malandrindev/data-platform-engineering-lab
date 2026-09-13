@@ -54,3 +54,9 @@ temp/
 
 # Jupyter
 .ipynb_checkpoints/
+
+# dbt generated artifacts
+transformations/target/
+transformations/logs/
+transformations/dbt_packages/
+transformations/.user.yml

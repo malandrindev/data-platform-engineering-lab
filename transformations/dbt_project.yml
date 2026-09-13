@@ -1,0 +1,29 @@
+name: data_platform_engineering_lab
+version: "1.0.0"
+config-version: 2
+
+profile: data_platform_engineering_lab
+
+model-paths:
+  - models
+
+macro-paths:
+  - macros
+
+clean-targets:
+  - target
+  - dbt_packages
+
+models:
+  data_platform_engineering_lab:
+    staging:
+      +materialized: view
+      +schema: staging
+
+    intermediate:
+      +materialized: view
+      +schema: intermediate
+
+    marts:
+      +materialized: table
+      +schema: marts
