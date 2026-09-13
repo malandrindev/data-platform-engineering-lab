@@ -104,7 +104,10 @@ def test_run_usgs_ingestion_succeeds() -> None:
         started_at=started_at,
     )
 
-    fetch_payload.assert_called_once_with(http_client)
+    fetch_payload.assert_called_once_with(
+        http_client,
+        url=USGS_FEED_URL,
+    )
 
     build_path.assert_called_once_with(
         pipeline_name=PIPELINE_NAME,

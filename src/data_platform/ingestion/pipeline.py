@@ -42,6 +42,7 @@ def run_usgs_ingestion(
     http_client: httpx.Client,
     container: ContainerClient,
     connection: Connection[Any],
+    source_url: str = USGS_FEED_URL,
     now: Callable[[], datetime] = utc_now,
     run_id_factory: Callable[[], UUID] = uuid4,
 ) -> UUID:
@@ -54,12 +55,12 @@ def run_usgs_ingestion(
         connection,
         run_id=run_id,
         pipeline_name=PIPELINE_NAME,
-        source_url=USGS_FEED_URL,
+        source_url=source_url,
         started_at=started_at,
     )
 
     try:
-        payload = fetch_usgs_payload(http_client)
+        payload = fetch_usgs_payload(http_client, url=source_url)
         records_received = count_geojson_features(payload)
 
         blob_path = build_raw_blob_path(
