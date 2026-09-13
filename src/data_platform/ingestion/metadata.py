@@ -58,3 +58,44 @@ def create_pipeline_run(
         )
 
     connection.commit()
+
+
+UPDATE_PIPELINE_RUN_SQL = """
+UPDATE pipeline_runs
+SET
+    completed_at = %s,
+    status = %s,
+    records_received = %s,
+    raw_blob_path = %s,
+    error_message = %s
+WHERE run_id = %s;
+"""
+
+
+def complete_pipeline_run(
+    connection: Connection[Any],
+    *,
+    run_id: UUID,
+    completed_at: datetime,
+    status: str,
+    records_received: int | None,
+    raw_blob_path: str | None,
+    error_message: str | None,
+) -> None:
+    if status not in {"succeeded", "failed"}:
+        raise ValueError("status must be 'succeeded' or 'failed'")
+
+    with connection.cursor() as cursor:
+        cursor.execute(
+            UPDATE_PIPELINE_RUN_SQL,
+            (
+                completed_at,
+                status,
+                records_received,
+                raw_blob_path,
+                error_message,
+                run_id,
+            ),
+        )
+
+    connection.commit()
