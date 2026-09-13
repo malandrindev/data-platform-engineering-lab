@@ -1,0 +1,49 @@
+version: 2
+
+models:
+  - name: fct_earthquake_events
+    description: >
+      Analytical fact table containing the latest known representation of each
+      USGS earthquake event across all ingested snapshots.
+
+    columns:
+      - name: event_id
+        description: USGS earthquake event identifier and grain of the mart.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: event_time
+        description: Earthquake occurrence timestamp in UTC.
+        data_tests:
+          - not_null
+
+      - name: event_date
+        description: UTC calendar date derived from event_time.
+        data_tests:
+          - not_null
+
+      - name: magnitude_class
+        description: Analytical magnitude classification derived from magnitude.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - micro
+                  - minor
+                  - light
+                  - moderate
+                  - strong
+                  - major
+                  - great
+
+      - name: tsunami_flag
+        description: Boolean indicator derived from the USGS tsunami field.
+        data_tests:
+          - not_null
+
+      - name: latest_ingestion_run_id
+        description: Most recent ingestion snapshot selected for the event.
+        data_tests:
+          - not_null
