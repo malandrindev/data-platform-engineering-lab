@@ -1,4 +1,6 @@
+from datetime import datetime
 from typing import Any
+from uuid import UUID
 
 from psycopg import Connection
 
@@ -20,5 +22,39 @@ CREATE TABLE IF NOT EXISTS pipeline_runs (
 def ensure_pipeline_runs_table(connection: Connection[Any]) -> None:
     with connection.cursor() as cursor:
         cursor.execute(CREATE_PIPELINE_RUNS_TABLE_SQL)
+
+    connection.commit()
+
+
+INSERT_PIPELINE_RUN_SQL = """
+INSERT INTO pipeline_runs (
+    run_id,
+    pipeline_name,
+    source_url,
+    started_at,
+    status
+)
+VALUES (%s, %s, %s, %s, 'running');
+"""
+
+
+def create_pipeline_run(
+    connection: Connection[Any],
+    *,
+    run_id: UUID,
+    pipeline_name: str,
+    source_url: str,
+    started_at: datetime,
+) -> None:
+    with connection.cursor() as cursor:
+        cursor.execute(
+            INSERT_PIPELINE_RUN_SQL,
+            (
+                run_id,
+                pipeline_name,
+                source_url,
+                started_at,
+            ),
+        )
 
     connection.commit()
